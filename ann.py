@@ -1,11 +1,8 @@
 import torch.nn as nn
 import torch
 from bi import BI
-from di import DI
-from ri import RI
-from ndi import NDI
-from sndi import SNDI
-from mndi import MNDI
+import torch.nn.functional as F
+
 from torchcubicspline import(natural_cubic_spline_coeffs, NaturalCubicSpline)
 
 
@@ -15,12 +12,9 @@ class ANN(nn.Module):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.sis = [
-            {"si":BI, "count":5},
-            {"si":DI, "count":0},
-            {"si":RI, "count":0},
-            {"si":NDI, "count":0},
-            {"si":SNDI, "count":0},
-            {"si":MNDI, "count":0}
+            {"si":BI, "count":10, "initial_values": torch.tensor([-2.19722458, -1.38629436, -0.84729786, -0.40546511,
+                                                                  0.40546511,  0.84729786,  1.38629436,  2.19722458,
+                                                                  3.04452244,  4.60517019]).reshape(-1,1) }
         ]
 
         self.total = sum([si["count"] for si in self.sis])
@@ -34,7 +28,11 @@ class ANN(nn.Module):
         self.indices = torch.linspace(0, 1, 66).to(self.device)
         modules = []
         for si in self.sis:
-            modules = modules + [si["si"]() for i in range(si["count"])]
+            if "initial_values" in si:
+                for i in range(si["count"]):
+                    modules.append(si["si"](si["initial_values"][i]))
+            else:
+                modules = modules + [si["si"]() for i in range(si["count"])]
         self.machines = nn.ModuleList(modules)
 
     def forward(self, x):
@@ -49,6 +47,18 @@ class ANN(nn.Module):
         soc_hat = self.linear1(outputs)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat
+
+    def get_param_loss(self):
+        loss = None
+        for i in range(1, len(self.machines)):
+            later_band = self.machines[i].params
+            past_band = self.machines[i-1].params
+            this_loss = F.relu(past_band-later_band)
+            if loss is None:
+                loss = this_loss
+            else:
+                loss = loss + this_loss
+        return loss
 
     def get_params(self):
         params = []

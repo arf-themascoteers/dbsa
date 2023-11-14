@@ -10,8 +10,7 @@ from reporter import Reporter
 class ANNVanilla:
     def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.ann_model = ANN()
-        self.model = self.ann_model
+        self.model = ANN()
         self.model.to(self.device)
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
@@ -24,12 +23,12 @@ class ANNVanilla:
         self.write_columns()
         self.model.train()
         px = []
-        for params in self.ann_model.machines:
+        for params in self.model.machines:
             for p in params.parameters():
                 px.append(p)
 
         param_group1 = {'params': px, 'lr': 0.01,}
-        param_group2 = {'params': self.ann_model.linear1.parameters(), 'lr': 0.001}
+        param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
         optimizer = torch.optim.Adam([param_group1,param_group2])
 
         #optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01, weight_decay=0.001)
@@ -46,6 +45,7 @@ class ANNVanilla:
                 y = y.to(self.device)
                 y_hat = self.model(x)
                 loss = self.criterion(y_hat, y)
+                loss = loss + self.model.get_param_loss()
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
@@ -95,7 +95,7 @@ class ANNVanilla:
     def write_columns(self):
         columns = ["epoch","batch","r2","rmse"]
         serial = 1
-        for p in self.ann_model.get_params():
+        for p in self.model.get_params():
             columns.append(f"SI#{serial}")
             serial = serial+1
             for mp in p["params"]:
@@ -114,7 +114,7 @@ class ANNVanilla:
         plot_items.append({"name":"rmse","value":rmse})
         row = [epoch, batch_number, r2, rmse]
         serial = 1
-        for p in self.ann_model.get_params():
+        for p in self.model.get_params():
             row.append(p["si"])
             serial = serial+1
             for mp in p["params"]:
