@@ -12,17 +12,17 @@ class ANN(nn.Module):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.sis = [
-            {"si":BI, "count":10, "initial_values": torch.tensor([-2.19722458, -1.38629436, -0.84729786, -0.40546511,
+            {"si":BI, "count":10, "initial_values": torch.tensor([-4.19722458, -1.38629436, -0.84729786, -0.40546511,
                                                                   0.40546511,  0.84729786,  1.38629436,  2.19722458,
-                                                                  3.04452244,  4.60517019]).reshape(-1,1) }
+                                                                  3.04452244,  6.60517019]).reshape(-1,1) }
         ]
 
         self.total = sum([si["count"] for si in self.sis])
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self.total, 20),
+            nn.Linear(self.total, 5),
             nn.LeakyReLU(),
-            nn.Linear(20, 1)
+            nn.Linear(5, 1)
         )
 
         self.indices = torch.linspace(0, 1, 66).to(self.device)
