@@ -40,7 +40,7 @@ class ANNVanilla:
         for epoch in range(self.epochs):
             batch_number = 0
             rows = []
-            for (x, y) in dataloader:
+            for batch_number,(x, y) in enumerate(dataloader):
                 x = x.to(self.device)
                 y = y.to(self.device)
                 y_hat = self.model(x)
@@ -49,14 +49,10 @@ class ANNVanilla:
                 loss.backward()
                 optimizer.step()
                 optimizer.zero_grad()
-                batch_number += 1
-                row = self.dump(y, y_hat, loss, epoch + 1, batch_number)
-                rows.append(row)
 
                 #print(f'Epoch:{epoch + 1} (of {self.epochs}), Batch: {batch_number} of {n_batches}, Loss:{loss.item():.6f}')
-            r2, rmse = self.validate()
-            r2 = round(r2,5)
-            rmse = round(rmse,5)
+            row = self.dump(y, y_hat, loss, epoch + 1, batch_number+1)
+            rows.append(row)
             print("".join([str(i).ljust(10) for i in row]))
             Reporter.write_rows(rows)
 
