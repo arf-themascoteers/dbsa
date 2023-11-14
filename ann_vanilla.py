@@ -4,12 +4,11 @@ from spectral_dataset import SpectralDataset
 import torch
 from torch.utils.data import DataLoader
 from ann import ANN
-import torch.nn.functional as F
+from reporter import Reporter
 
 
 class ANNVanilla:
-    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y, reporter):
-        self.reporter = reporter
+    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.ann_model = ANN()
         self.model = self.ann_model
@@ -29,7 +28,7 @@ class ANNVanilla:
         batch_number = 0
         loss = None
         dataloader = DataLoader(self.train_dataset, batch_size=self.batch_size)
-
+        row = None
         for epoch in range(self.epochs):
             batch_number = 0
             rows = []
@@ -42,13 +41,15 @@ class ANNVanilla:
                 optimizer.step()
                 optimizer.zero_grad()
                 batch_number += 1
-                rows.append(self.create_row(y,y_hat,loss,epoch+1, batch_number))
+                row = self.dump(y, y_hat, loss, epoch + 1, batch_number)
+                rows.append(row)
+
                 #print(f'Epoch:{epoch + 1} (of {self.epochs}), Batch: {batch_number} of {n_batches}, Loss:{loss.item():.6f}')
             r2, rmse = self.validate()
             r2 = round(r2,5)
             rmse = round(rmse,5)
-            print(f"{epoch+1}:",r2,rmse)
-            self.reporter.write_rows(rows)
+            print("".join([str(i).ljust(10) for i in row]))
+            Reporter.write_rows(rows)
 
         #torch.save(self.model, "ann.pt")]
 
@@ -82,14 +83,6 @@ class ANNVanilla:
 
             return max(r2,0), rmse
 
-    def dump(self):
-        s = ""
-        for p in self.ann_model.get_params():
-            s = s+f"{p['si'].__name__:}"
-            for mp in p["params"]:
-                s = s+f"({mp['name']}:{mp['value']})"
-        print(s)
-
     def write_columns(self):
         columns = ["epoch","batch","r2","loss"]
         serial = 1
@@ -98,14 +91,18 @@ class ANNVanilla:
             serial = serial+1
             for mp in p["params"]:
                 columns.append(mp["name"])
-        self.reporter.write_columns(columns)
+        print("".join([c.ljust(10) for c in columns]))
+        Reporter.write_columns(columns)
 
-    def create_row(self, y,y_hat,loss,epoch, batch_number):
+    def dump(self, y, y_hat, loss, epoch, batch_number):
+        plot_items = []
         y_hat = y_hat.detach().cpu().numpy()
         y = y.detach().cpu().numpy()
         r2 = round(r2_score(y, y_hat),5)
         r2 = max(0,r2)
+        plot_items.append({"name":"r2","value":r2})
         rmse = round(math.sqrt(loss.item()),5)
+        plot_items.append({"name":"rmse","value":rmse})
         row = [epoch, batch_number, r2, rmse]
         serial = 1
         for p in self.ann_model.get_params():
