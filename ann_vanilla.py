@@ -15,7 +15,7 @@ class ANNVanilla:
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
-        self.epochs = 150
+        self.epochs = 250
         self.batch_size = 1000
         self.criterion = torch.nn.MSELoss(reduction='mean')
 
