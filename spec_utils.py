@@ -12,7 +12,7 @@ def wavelengths_itr():
 
 
 def get_wavelengths():
-    return [f"{i}" for i in range(66)]
+    return list(wavelengths_itr())
 
 
 def get_wavelengths_str():
@@ -21,3 +21,7 @@ def get_wavelengths_str():
 
 def get_rgb():
     return ["blue", "green", "red"]
+
+
+if __name__ == "__main__":
+    print(list(wavelengths_itr()))
