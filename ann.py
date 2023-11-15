@@ -25,7 +25,7 @@ class ANN(nn.Module):
             nn.Linear(10, 1)
         )
 
-        self.indices = torch.linspace(0, 1, 66).to(self.device)
+        self.indices = torch.linspace(0, 1, 4200).to(self.device)
         modules = []
         for si in self.sis:
             if "initial_values" in si:
