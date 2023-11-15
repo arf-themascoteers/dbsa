@@ -8,7 +8,6 @@ import pandas as pd
 def plot_me_plz():
     df = pd.read_csv("test.csv")
     epoch_col = df.columns.get_loc("epoch")
-    batch_col = df.columns.get_loc("batch")
     rw_col = df.columns.get_loc("r2")
     rmse_col = df.columns.get_loc("rmse")
     itrs = len(df)
