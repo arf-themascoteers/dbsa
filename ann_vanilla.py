@@ -15,7 +15,7 @@ class ANNVanilla:
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
-        self.epochs = 400
+        self.epochs = 150
         self.batch_size = 1000
         self.criterion = torch.nn.MSELoss(reduction='mean')
 
@@ -27,7 +27,8 @@ class ANNVanilla:
             for p in params.parameters():
                 px.append(p)
 
-        param_group1 = {'params': px, 'lr': 0.01,}
+        param_group1 = {'params': px, 'lr': 0.01, "betas":(0.9, 0.999)}
+        #param_group1 = {'params': px, 'lr': 0.01}
         param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
         optimizer = torch.optim.Adam([param_group1,param_group2])
 

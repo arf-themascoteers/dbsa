@@ -1,29 +1,12 @@
 import matplotlib
 matplotlib.use("TkAgg")
 import math
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import pandas as pd
 
 
-# def init():
-#     for ax in axes.flatten():
-#         ax.plot(x, np.ma.array(x, mask=True))
-#     return lines
-#
-#
-# def animate(frame):
-#     y_values = [np.sin(2 * np.pi * (x - 0.02 * frame + i)) for i in range(16)]
-#
-#     for i, line in enumerate(lines):
-#         line.set_ydata(y_values[i])
-#
-#     return lines
-
-
-if __name__ == "__main__":
-    df = pd.read_csv("test_05.csv")
+def plot_me_plz():
+    df = pd.read_csv("test.csv")
     epoch_col = df.columns.get_loc("epoch")
     batch_col = df.columns.get_loc("batch")
     rw_col = df.columns.get_loc("r2")
@@ -47,31 +30,36 @@ if __name__ == "__main__":
     sis.append(si)
     print(sis)
     total_plots = len(sis)
-    rows = math.ceil(total_plots/2)
+    rows = math.ceil(total_plots/4)
 
-    fig, axes = plt.subplots(nrows=rows, ncols=2, figsize=(12, 8))
+    fig, axes = plt.subplots(nrows=1, ncols=3)
 
     axes = axes.flatten()
-
+    band_serial = 1
     for i,p in enumerate(sis):
         name = p["name"]
-        ax = axes[i]
-
-        if name in ["r2", "rmse"]:
+        if name in ["r2"]:
+            ax = axes[0]
             data = df[name].tolist()
             ax.plot(data)
+            ax.set_title(name)
+        elif name in ["rmse"]:
+            ax = axes[1]
+            data = df[name].tolist()
+            ax.plot(data)
+            ax.set_title(name)
         else:
-            for a_param in p["params"]:
+            ax = axes[2]
+            for index,a_param in enumerate(p["params"]):
                 data= df[a_param].tolist()
-                ax.plot(data)
+                ax.plot(data, label = f"Band-{band_serial}")
                 ax.set_ylim(1, 4300)
-                print(data)
+                band_serial = band_serial+1
+    axes[2].legend(loc='center right', framealpha=0.1)
+    axes[2].set_title("Bands")
 
     plt.show()
-    # for ax in axes:
-    #     ax.legend()
-    #
-    # ani = FuncAnimation(fig, animate, frames=np.arange(1, 200), init_func=init, blit=True)
-    # plt.show()
-    # ani.save('animation.mp4', writer='ffmpeg', fps=30)
 
+
+if __name__ == "__main__":
+    plot_me_plz()

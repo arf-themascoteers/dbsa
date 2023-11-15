@@ -20,9 +20,9 @@ class ANN(nn.Module):
         self.total = sum([si["count"] for si in self.sis])
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self.total, 5),
+            nn.Linear(self.total, 10),
             nn.LeakyReLU(),
-            nn.Linear(5, 1)
+            nn.Linear(10, 1)
         )
 
         self.indices = torch.linspace(0, 1, 66).to(self.device)
