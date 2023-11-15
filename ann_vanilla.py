@@ -90,7 +90,7 @@ class ANNVanilla:
             return max(r2,0), rmse
 
     def write_columns(self):
-        columns = ["epoch","batch","r2","rmse"]
+        columns = ["epoch","r2","rmse"]
         serial = 1
         for p in self.model.get_params():
             columns.append(f"SI#{serial}")
@@ -109,7 +109,7 @@ class ANNVanilla:
         plot_items.append({"name":"r2","value":r2})
         rmse = round(math.sqrt(loss.item()),5)
         plot_items.append({"name":"rmse","value":rmse})
-        row = [epoch, batch_number, r2, rmse]
+        row = [epoch, r2, rmse]
         serial = 1
         for p in self.model.get_params():
             row.append(p["si"])
