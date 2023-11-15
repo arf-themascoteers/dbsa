@@ -20,7 +20,9 @@ class ANN(nn.Module):
         self.total = sum([si["count"] for si in self.sis])
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self.total, 10),
+            nn.Linear(self.total, 50),
+            nn.LeakyReLU(),
+            nn.Linear(50, 10),
             nn.LeakyReLU(),
             nn.Linear(10, 1)
         )
