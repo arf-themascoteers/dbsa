@@ -91,7 +91,7 @@ class ANNVanilla:
         return self.evaluate(self.validation_dataset)
 
     def write_columns(self):
-        columns = ["epoch","train_r2","train_rmse","test_r2","test_rmse","validation_r2","validation_rmse","time"]
+        columns = ["epoch","train_r2","test_r2","validation_r2","train_rmse","test_rmse","validation_rmse","time"]
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index+1}")
         print("".join([c.ljust(20) for c in columns]))
@@ -101,7 +101,7 @@ class ANNVanilla:
         train_r2, train_rmse = self.train_results()
         test_r2, test_rmse = self.test_results()
         validation_r2, validation_rmse = self.validation_results()
-        row = [train_r2, train_rmse, test_r2, test_rmse, validation_r2, validation_rmse]
+        row = [train_r2, test_r2, validation_r2, train_rmse,test_rmse, validation_rmse]
         row = [round(r,5) for r in row]
         row = [epoch] + row + [self.get_elapsed_time()]
         for p in self.model.get_indices():
