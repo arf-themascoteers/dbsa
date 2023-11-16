@@ -34,7 +34,7 @@ class ANNVanilla:
 
     def create_optimizer(self):
         if self.uniform_lr:
-            torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=0.001)
+            return torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=0.0001)
         param_group1 = {'params': self.model.machines.parameters(), 'lr': 0.003, "betas":(0.8, 0.888)}
         param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
         return torch.optim.Adam([param_group1,param_group2], lr=0.001, weight_decay=0.001)
