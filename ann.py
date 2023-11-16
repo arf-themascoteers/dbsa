@@ -9,14 +9,14 @@ class ANN(nn.Module):
     def __init__(self, spline_indices, random_initialize=True,indexify="sigmoid"):
         super().__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.sis_count = 10
+        self.target_band_count = 10
         self.indexify = indexify
         self.initial_values = torch.linspace(0.05, 0.95, 10)
         if self.indexify == "sigmoid":
             self.initial_values = ANN.inverse_sigmoid_torch(self.initial_values)
 
         self.linear1 = nn.Sequential(
-            nn.Linear(self.total, 50),
+            nn.Linear(self.target_band_count, 50),
             nn.LeakyReLU(),
             nn.Linear(50, 10),
             nn.LeakyReLU(),
@@ -24,7 +24,7 @@ class ANN(nn.Module):
         )
         self.indices = torch.linspace(0, 1, spline_indices).to(self.device)
         modules = []
-        for i in range(self.sis_count):
+        for i in range(self.target_band_count):
             initial_value = None
             if not random_initialize:
                 initial_value = self.initial_values[i]
