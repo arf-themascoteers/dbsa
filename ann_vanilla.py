@@ -10,12 +10,14 @@ from datetime import datetime
 
 class ANNVanilla:
     def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y, dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True):
+        print(f"dwt={dwt},indexify={indexify}, retain_relative_position={retain_relative_position},random_initialize={random_initialize}")
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
+        self.feature_size = validation_x.shape[1]
         self.retain_relative_position = retain_relative_position
-        self.model = ANN(validation_x.shape[1], random_initialize,indexify="sigmoid")
+        self.model = ANN(self.feature_size, random_initialize,indexify="sigmoid")
         self.model.to(self.device)
         self.criterion = torch.nn.MSELoss(reduction='mean')
         self.epochs = 1000
@@ -100,7 +102,10 @@ class ANNVanilla:
         validation_r2, validation_rmse = self.validation_results()
         plot_items = [epoch, train_r2, train_rmse, test_r2, test_rmse, validation_r2, validation_rmse, self.get_elapsed_time()]
         for p in self.model.get_indices():
-            for mp in p["params"]:
-                plot_items.append(round(mp["value"],5))
+            plot_items.append(ANNVanilla.indexify_raw_index(p))
         Reporter.write_row(plot_items)
         return plot_items
+
+    @staticmethod
+    def indexify_raw_index(raw_index):
+        return round(raw_index * self.feature_size,5)
