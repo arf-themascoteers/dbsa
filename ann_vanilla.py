@@ -94,7 +94,7 @@ class ANNVanilla:
     def write_columns(self):
         columns = ["epoch","train_r2","train_rmse","test_r2","test_rmse","validation_r2","validation_rmse","time"]
         for index,p in enumerate(self.model.get_indices()):
-            columns.append(f"band_{index}")
+            columns.append(f"band_{index+1}")
         print("".join([c.ljust(20) for c in columns]))
         self.reporter.write_columns(columns)
 
