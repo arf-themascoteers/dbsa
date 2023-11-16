@@ -11,7 +11,7 @@ import os
 
 class ANNVanilla:
     def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y,
-                 dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True,uniform_lr=True, skip=True):
+                 dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True,uniform_lr=True, lr=0.0001, skip=True):
         print(f"dwt={dwt},indexify={indexify}, retain_relative_position={retain_relative_position},random_initialize={random_initialize},uniform_lr={uniform_lr}")
         self.skip = skip
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,6 +19,7 @@ class ANNVanilla:
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
         self.uniform_lr = uniform_lr
+        self.lr = lr
         self.feature_size = validation_x.shape[1]
         self.retain_relative_position = retain_relative_position
         self.model = ANN(self.feature_size, random_initialize,indexify="sigmoid",skip=self.skip)
@@ -34,6 +35,7 @@ class ANNVanilla:
                       f"{str(retain_relative_position)}_" \
                       f"{str(random_initialize)}_" \
                       f"{str(self.uniform_lr)}_" \
+                      f"{str(self.lr)}_" \
                       f"{str(self.skip)}"
         self.csv_file = self.prefix+".csv"
         self.done_file = self.prefix+".txt"
@@ -45,12 +47,14 @@ class ANNVanilla:
         return (datetime.now() - self.start_time).total_seconds()
 
     def create_optimizer(self):
+        weight_decay = self.lr/10
         if self.uniform_lr:
-            return torch.optim.Adam(self.model.parameters(), lr=0.0001, weight_decay=0.00001)
-        param_group1 = {'params': self.model.machines.parameters(), 'lr': 0.0003, "betas":(0.8, 0.888)}
-        param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.0001}
-        param_group3 = {'params': self.model.linear2.parameters(), 'lr': 0.0001}
-        return torch.optim.Adam([param_group1,param_group2,param_group3], lr=0.0001, weight_decay=0.00001)
+            return torch.optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=weight_decay)
+        special_lr = self.lr*3
+        param_group1 = {'params': self.model.machines.parameters(), 'lr': special_lr, "betas":(0.8, 0.888)}
+        param_group2 = {'params': self.model.linear1.parameters(), 'lr': self.lr}
+        param_group3 = {'params': self.model.linear2.parameters(), 'lr': self.lr}
+        return torch.optim.Adam([param_group1,param_group2,param_group3], lr=self.lr, weight_decay=weight_decay)
 
     def train(self):
         if os.path.exists(self.done_file):
