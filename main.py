@@ -1,9 +1,8 @@
 from ds_manager import DSManager
 from ann_vanilla import ANNVanilla
-from plott import plot_me_plz
 
 if __name__ == "__main__":
-    for dwt in [True,False]:
+    for dwt in [True, False]:
         for indexify in ["sigmoid","relu"]:
             for retain_relative_position in [True, False]:
                 for random_initialize in [True, False]:
@@ -13,4 +12,3 @@ if __name__ == "__main__":
                     ann = ANNVanilla(train_x, train_y, test_x, test_y, validation_x, validation_y,
                                      dwt, indexify, retain_relative_position, random_initialize)
                     ann.train()
-                    plot_me_plz(dwt, indexify, retain_relative_position, random_initialize)
