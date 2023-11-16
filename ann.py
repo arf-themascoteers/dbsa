@@ -6,12 +6,16 @@ from torchcubicspline import(natural_cubic_spline_coeffs, NaturalCubicSpline)
 
 
 class ANN(nn.Module):
-    def __init__(self, spline_indices, random_initialize=True,indexify="sigmoid"):
+    def __init__(self, spline_indices, random_initialize=True,indexify="sigmoid",skip=True):
         super().__init__()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.target_band_count = 10
         self.indexify = indexify
+        self.skip = skip
         self.initial_values = torch.linspace(0.05, 0.95, 10)
+        self.linear2_input = 10
+        if self.skip:
+            self.linear2_input = self.linear2_input + 10
         if self.indexify == "sigmoid":
             self.initial_values = ANN.inverse_sigmoid_torch(self.initial_values)
 
@@ -19,8 +23,10 @@ class ANN(nn.Module):
             nn.Linear(self.target_band_count, 50),
             nn.LeakyReLU(),
             nn.Linear(50, 10),
-            nn.LeakyReLU(),
-            nn.Linear(10, 1)
+            nn.LeakyReLU()
+        )
+        self.linear2 = nn.Sequential(
+            nn.Linear(self.linear2_input, 1)
         )
         self.indices = torch.linspace(0, 1, spline_indices).to(self.device)
         modules = []
@@ -44,7 +50,12 @@ class ANN(nn.Module):
         for i,machine in enumerate(self.machines):
             outputs[:,i] = machine(spline)
 
-        soc_hat = self.linear1(outputs)
+        intermediate = self.linear1(outputs)
+        if self.skip:
+            outputs = torch.hstack((outputs, intermediate))
+        else:
+            outputs = intermediate
+        soc_hat = self.linear2(outputs)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat
 
