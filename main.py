@@ -1,16 +1,16 @@
-# This is a sample Python script.
+from ds_manager import DSManager
+from ann_vanilla import ANNVanilla
+from plott import plot_me_plz
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    for dwt in [True,False]:
+        for indexify in ["sigmoid","relu"]:
+            for retain_relative_position in [True, False]:
+                for random_initialize in [True, False]:
+                    ds = DSManager(dwt)
+                    train_x, train_y, test_x, test_y, validation_x, validation_y = ds.get_datasets()
+                    print(f"Train: {len(train_y)}, Test: {len(test_y)}, Validation: {len(validation_y)}")
+                    ann = ANNVanilla(train_x, train_y, test_x, test_y, validation_x, validation_y,
+                                     dwt, indexify, retain_relative_position, random_initialize)
+                    ann.train()
+                    plot_me_plz(dwt, indexify, retain_relative_position, random_initialize)
