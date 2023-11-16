@@ -10,12 +10,13 @@ from datetime import datetime
 
 
 class ANNVanilla:
-    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y, dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True):
-        print(f"dwt={dwt},indexify={indexify}, retain_relative_position={retain_relative_position},random_initialize={random_initialize}")
+    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y, dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True,uniform_lr=True):
+        print(f"dwt={dwt},indexify={indexify}, retain_relative_position={retain_relative_position},random_initialize={random_initialize},uniform_lr={uniform_lr}")
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
+        self.uniform_lr = uniform_lr
         self.feature_size = validation_x.shape[1]
         self.retain_relative_position = retain_relative_position
         self.model = ANN(self.feature_size, random_initialize,indexify="sigmoid")
@@ -24,26 +25,24 @@ class ANNVanilla:
         self.epochs = 1000
         self.batch_size = 1000
         self.dwt = dwt
-        if not self.dwt:
-            self.epochs = 400
         self.model_name = f"{str(dwt)}_{indexify}_{str(retain_relative_position)}_{str(random_initialize)}.pt"
         self.start_time = datetime.now()
-        self.reporter = Reporter(dwt, indexify, retain_relative_position, random_initialize)
+        self.reporter = Reporter(dwt, indexify, retain_relative_position, random_initialize,uniform_lr)
 
     def get_elapsed_time(self):
         return (datetime.now() - self.start_time).total_seconds()
 
+    def create_optimizer(self):
+        if self.uniform_lr:
+            torch.optim.Adam(self.model.parameters(), lr=0.001, weight_decay=0.001)
+        param_group1 = {'params': self.model.machines.parameters(), 'lr': 0.003, "betas":(0.8, 0.888)}
+        param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
+        return torch.optim.Adam([param_group1,param_group2], lr=0.001, weight_decay=0.001)
+
     def train(self):
         self.write_columns()
         self.model.train()
-        px = []
-        for params in self.model.machines:
-            for p in params.parameters():
-                px.append(p)
-
-        param_group1 = {'params': px, 'lr': 0.01, "betas":(0.9, 0.999)}
-        param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
-        optimizer = torch.optim.Adam([param_group1,param_group2], lr=0.01, weight_decay=0.001)
+        optimizer = self.create_optimizer()
         dataloader = DataLoader(self.train_dataset, batch_size=self.batch_size)
         for epoch in range(self.epochs):
             rows = []
