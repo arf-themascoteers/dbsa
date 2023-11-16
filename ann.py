@@ -60,5 +60,5 @@ class ANN(nn.Module):
                 loss = loss + this_loss
         return loss
 
-    def get_params(self):
-        return [machine.param for machine in self.machines]
+    def get_indices(self):
+        return [machine.index_value() for machine in self.machines]

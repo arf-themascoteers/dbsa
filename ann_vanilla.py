@@ -89,7 +89,7 @@ class ANNVanilla:
 
     def write_columns(self):
         columns = ["epoch","train_r2","train_rmse","test_r2","test_rmse","validation_r2","validation_rmse","time"]
-        for index,p in enumerate(self.model.get_params()):
+        for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index}")
         print("".join([c.ljust(10) for c in columns]))
         Reporter.write_columns(columns)
@@ -99,7 +99,7 @@ class ANNVanilla:
         test_r2, test_rmse = self.test_results()
         validation_r2, validation_rmse = self.validation_results()
         plot_items = [epoch, train_r2, train_rmse, test_r2, test_rmse, validation_r2, validation_rmse, self.get_elapsed_time()]
-        for p in self.model.get_params():
+        for p in self.model.get_indices():
             for mp in p["params"]:
                 plot_items.append(round(mp["value"],5))
         Reporter.write_row(plot_items)
