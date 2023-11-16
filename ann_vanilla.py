@@ -1,5 +1,6 @@
 import math
 from sklearn.metrics import mean_squared_error, r2_score
+import plott
 from spectral_dataset import SpectralDataset
 import torch
 from torch.utils.data import DataLoader
@@ -27,6 +28,7 @@ class ANNVanilla:
             self.epochs = 400
         self.model_name = f"{str(dwt)}_{indexify}_{str(retain_relative_position)}_{str(random_initialize)}.pt"
         self.start_time = datetime.now()
+        self.reporter = Reporter(dwt, indexify, retain_relative_position, random_initialize)
 
     def get_elapsed_time(self):
         return (datetime.now() - self.start_time).total_seconds()
@@ -61,8 +63,9 @@ class ANNVanilla:
             row = self.dump_row(epoch)
             rows.append(row)
             print("".join([str(i).ljust(20) for i in row]))
-            Reporter.write_row(rows)
+            self.reporter.write_row(rows)
             torch.save(self.model, self.model_name)
+        plott.plot_me_plz(self.reporter.get_filename())
 
     def evaluate(self,dataset):
         batch_size = 30000
@@ -94,7 +97,7 @@ class ANNVanilla:
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index}")
         print("".join([c.ljust(20) for c in columns]))
-        Reporter.write_columns(columns)
+        self.reporter.write_columns(columns)
 
     def dump_row(self, epoch):
         train_r2, train_rmse = self.train_results()
@@ -106,7 +109,7 @@ class ANNVanilla:
         for p in self.model.get_indices():
             row.append(self.indexify_raw_index(p))
 
-        Reporter.write_row(row)
+        self.reporter.write_row(row)
         return row
 
     def indexify_raw_index(self, raw_index):

@@ -1,6 +1,6 @@
 TEST = False
-FULL_DATASET = "data/dataset_66.csv"
-SMALL_DATASET = "data/dataset_r.csv"
+FULL_DATASET = "data/dataset_r.csv"
+SMALL_DATASET = "data/dataset_66.csv"
 
 if TEST:
     FULL_DATASET = "data/dataset_min.csv"

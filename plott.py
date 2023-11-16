@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_me_plz(dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True):
-    file = f"{str(dwt)}_{indexify}_{str(retain_relative_position)}_{str(random_initialize)}.csv"
-    df = pd.read_csv(file)
+def plot_me_plz(filename):
+    df = pd.read_csv(filename)
     all_columns = list(df.columns)
     band_columns = [col for col in all_columns if "band" in col]
     fig, axes = plt.subplots(nrows=2, ncols=2)
@@ -32,4 +31,4 @@ def plot_me_plz(dwt=True,indexify="sigmoid", retain_relative_position=True,rando
 
 
 if __name__ == "__main__":
-    plot_me_plz()
+    plot_me_plz("True_sigmoid_True_True.csv")
