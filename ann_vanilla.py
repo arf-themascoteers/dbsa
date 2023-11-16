@@ -63,7 +63,6 @@ class ANNVanilla:
             row = self.dump_row(epoch)
             rows.append(row)
             print("".join([str(i).ljust(20) for i in row]))
-            self.reporter.write_row(rows)
             torch.save(self.model, self.model_name)
         plott.plot_me_plz(self.reporter.get_filename())
 
