@@ -10,9 +10,8 @@ class Reporter:
             file.write("\n")
 
     @staticmethod
-    def write_row(rows):
+    def write_row(row):
         with open(Reporter.get_filename(), 'a') as file:
-            for row in rows:
-                file.write(",".join([f"{x}" for x in row]))
-                file.write("\n")
+            file.write(",".join([f"{x}" for x in row]))
+            file.write("\n")
 

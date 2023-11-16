@@ -36,7 +36,7 @@ class ANN(nn.Module):
         return -torch.log(1.0 / x - 1.0)
 
     def forward(self, x):
-        outputs = torch.zeros(x.shape[0], self.total, dtype=torch.float32).to(self.device)
+        outputs = torch.zeros(x.shape[0], self.target_band_count, dtype=torch.float32).to(self.device)
         x = x.permute(1,0)
         coeffs = natural_cubic_spline_coeffs(self.indices, x)
         spline = NaturalCubicSpline(coeffs)

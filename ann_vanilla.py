@@ -29,7 +29,7 @@ class ANNVanilla:
         self.start_time = datetime.now()
 
     def get_elapsed_time(self):
-        return datetime.now() - self.start_time
+        return (datetime.now() - self.start_time).total_seconds()
 
     def train(self):
         self.write_columns()
@@ -60,7 +60,7 @@ class ANNVanilla:
 
             row = self.dump_row(epoch)
             rows.append(row)
-            print("".join([str(i).ljust(10) for i in row]))
+            print("".join([str(i).ljust(20) for i in row]))
             Reporter.write_row(rows)
             torch.save(self.model, self.model_name)
 
@@ -93,19 +93,21 @@ class ANNVanilla:
         columns = ["epoch","train_r2","train_rmse","test_r2","test_rmse","validation_r2","validation_rmse","time"]
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index}")
-        print("".join([c.ljust(10) for c in columns]))
+        print("".join([c.ljust(20) for c in columns]))
         Reporter.write_columns(columns)
 
     def dump_row(self, epoch):
         train_r2, train_rmse = self.train_results()
         test_r2, test_rmse = self.test_results()
         validation_r2, validation_rmse = self.validation_results()
-        plot_items = [epoch, train_r2, train_rmse, test_r2, test_rmse, validation_r2, validation_rmse, self.get_elapsed_time()]
+        row = [train_r2, train_rmse, test_r2, test_rmse, validation_r2, validation_rmse]
+        row = [round(r,5) for r in row]
+        row = [epoch] + row + [self.get_elapsed_time()]
         for p in self.model.get_indices():
-            plot_items.append(ANNVanilla.indexify_raw_index(p))
-        Reporter.write_row(plot_items)
-        return plot_items
+            row.append(self.indexify_raw_index(p))
 
-    @staticmethod
-    def indexify_raw_index(raw_index):
-        return round(raw_index * self.feature_size,5)
+        Reporter.write_row(row)
+        return row
+
+    def indexify_raw_index(self, raw_index):
+        return round(raw_index.item() * self.feature_size)
