@@ -15,7 +15,7 @@ class DSManager:
         if not self.dwt:
             dataset = constants.FULL_DATASET
         df = pd.read_csv(dataset)
-        self.X_columns = spec_utils.get_wavelengths()
+        self.X_columns = spec_utils.get_wavelengths(self.dwt)
         self.y_column = "oc"
         df = df[self.X_columns+[self.y_column]]
         df = df.sample(frac=1)

@@ -11,7 +11,9 @@ def wavelengths_itr():
     return wvs
 
 
-def get_wavelengths():
+def get_wavelengths(dwt=True):
+    if dwt:
+        return [str(i) for i in range(66)]
     return list(wavelengths_itr())
 
 
