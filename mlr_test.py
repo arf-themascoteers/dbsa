@@ -17,7 +17,7 @@ def get_X_y_from_df(df):
     return X,y.reshape(-1)
 
 
-df = pd.read_csv(constants.DATASET)
+df = pd.read_csv(constants.FULL_DATASET)
 train_df, test_df = model_selection.train_test_split(df, test_size=0.2)
 train_X = train_df[spec_utils.get_wavelengths()].to_numpy()
 train_y = train_df[["oc"]].to_numpy()

@@ -4,7 +4,7 @@ import os
 import spec_utils
 
 BASE_DIR = constants.LUCAS_PATH
-out_file = constants.DATASET
+out_file = constants.FULL_DATASET
 
 topsoil_df = pd.read_csv(constants.TOPSOIL_FILE)
 out = open(out_file, "w")

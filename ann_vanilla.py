@@ -5,19 +5,27 @@ import torch
 from torch.utils.data import DataLoader
 from ann import ANN
 from reporter import Reporter
+from datetime import datetime
 
 
 class ANNVanilla:
-    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y):
+    def __init__(self, train_x, train_y, test_x, test_y, validation_x, validation_y, dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = ANN()
+        self.model = ANN(random_initialize)
         self.model.to(self.device)
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
-        self.epochs = 2000
-        self.batch_size = 1000
         self.criterion = torch.nn.MSELoss(reduction='mean')
+        self.epochs = 1000
+        self.batch_size = 1000
+        self.dwt = dwt
+        if not self.dwt:
+            self.epochs = 400
+        self.start_time = datetime.now()
+
+    def get_elapsed_time(self):
+        return datetime.now() - self.start_time
 
     def train(self):
         self.write_columns()
@@ -28,16 +36,12 @@ class ANNVanilla:
                 px.append(p)
 
         param_group1 = {'params': px, 'lr': 0.01, "betas":(0.9, 0.999)}
-        #param_group1 = {'params': px, 'lr': 0.01}
         param_group2 = {'params': self.model.linear1.parameters(), 'lr': 0.001}
-        optimizer = torch.optim.Adam([param_group1,param_group2])
-
-        #optimizer = torch.optim.Adam(self.model.parameters(), lr=0.01, weight_decay=0.001)
-        n_batches = int(self.train_dataset.size()/self.batch_size) + 1
-        batch_number = 0
+        optimizer = torch.optim.Adam([param_group1,param_group2], lr=0.01, weight_decay=0.001)
         loss = None
         dataloader = DataLoader(self.train_dataset, batch_size=self.batch_size)
         row = None
+        y = None
         for epoch in range(self.epochs):
             batch_number = 0
             rows = []
@@ -57,7 +61,7 @@ class ANNVanilla:
             print("".join([str(i).ljust(10) for i in row]))
             Reporter.write_rows(rows)
 
-        #torch.save(self.model, "ann.pt")]
+        torch.save(self.model, "ann.pt")
 
     def test(self):
         batch_size = 30000

@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_me_plz():
-    df = pd.read_csv("test.csv")
+def plot_me_plz(dwt=True,indexify="sigmoid", retain_relative_position=True,random_initialize=True):
+    file = f"{str(dwt)}_{indexify}_{str(retain_relative_position)}_{str(random_initialize)}.csv"
+    df = pd.read_csv(file)
     epoch_col = df.columns.get_loc("epoch")
     rw_col = df.columns.get_loc("r2")
     rmse_col = df.columns.get_loc("rmse")

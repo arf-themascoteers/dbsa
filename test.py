@@ -1,9 +1,11 @@
 from evaluator import Evaluator
-from plott import plot_me_plz
 
 if __name__ == "__main__":
-    c = Evaluator()
-    r2, rmse = c.process()
-    print("r2",round(r2,5))
-    print("rmse",round(rmse,5))
-    plot_me_plz()
+    for dwt in [True,False]:
+        for indexify in ["sigmoid","relu"]:
+            for retain_relative_position in [True, False]:
+                for random_initialize in [True, False]:
+                    c = Evaluator()
+                    r2, rmse = c.process(dwt,indexify, retain_relative_position,random_initialize)
+                    print("r2",round(r2,5))
+                    print("rmse",round(rmse,5))

@@ -8,9 +8,13 @@ import numpy as np
 
 
 class DSManager:
-    def __init__(self):
+    def __init__(self,dwt=True):
         torch.manual_seed(0)
-        df = pd.read_csv(constants.DATASET)
+        self.dwt = dwt
+        dataset = constants.SMALL_DATASET
+        if not self.dwt:
+            dataset = constants.FULL_DATASET
+        df = pd.read_csv(dataset)
         self.X_columns = spec_utils.get_wavelengths()
         self.y_column = "oc"
         df = df[self.X_columns+[self.y_column]]
