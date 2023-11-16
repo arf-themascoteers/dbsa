@@ -15,7 +15,6 @@ class ANNVanilla:
         print(f"dwt={dwt},indexify={indexify}, retain_relative_position={retain_relative_position},random_initialize={random_initialize},uniform_lr={uniform_lr}")
         self.skip = skip
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.reporter = Reporter(dwt, indexify, retain_relative_position, random_initialize,uniform_lr,self.skip)
         self.train_dataset = SpectralDataset(train_x, train_y)
         self.test_dataset = SpectralDataset(test_x, test_y)
         self.validation_dataset = SpectralDataset(validation_x, validation_y)
@@ -30,8 +29,16 @@ class ANNVanilla:
         self.dwt = dwt
         if self.dwt:
             self.batch_size = 1200
-        self.model_name = f"{str(dwt)}_{indexify}_{str(retain_relative_position)}_{str(random_initialize)}.pt"
-        self.done_file = self.reporter.get_filename()+".done.txt"
+        self.prefix = f"{str(dwt)}_" \
+                      f"{indexify}_" \
+                      f"{str(retain_relative_position)}_" \
+                      f"{str(random_initialize)}_" \
+                      f"{str(self.uniform_lr)}_" \
+                      f"{str(self.skip)}"
+        self.csv_file = self.prefix+".csv"
+        self.done_file = self.prefix+".txt"
+        self.model_file = self.prefix+".pt"
+        self.reporter = Reporter(self.csv_file)
         self.start_time = datetime.now()
 
     def get_elapsed_time(self):
@@ -71,8 +78,8 @@ class ANNVanilla:
             row = self.dump_row(epoch)
             rows.append(row)
             print("".join([str(i).ljust(20) for i in row]))
-            torch.save(self.model, self.model_name)
-        plott.plot_me_plz(self.reporter.get_filename())
+            torch.save(self.model, self.model_file)
+        plott.plot_me_plz(self.csv_file)
 
         with open(self.done_file, 'w') as file:
             file.write(str(datetime.now()))
