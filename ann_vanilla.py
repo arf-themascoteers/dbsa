@@ -25,11 +25,11 @@ class ANNVanilla:
         self.model = ANN(self.feature_size, random_initialize,indexify="sigmoid",skip=self.skip)
         self.model.to(self.device)
         self.criterion = torch.nn.MSELoss(reduction='mean')
-        self.epochs = 600
+        self.epochs = 2500
         self.batch_size = 1000
         self.dwt = dwt
-        if self.dwt:
-            self.batch_size = 1200
+        if not self.dwt:
+            self.epochs = 2500
         self.prefix = f"{str(dwt)}_" \
                       f"{indexify}_" \
                       f"{str(retain_relative_position)}_" \
@@ -58,7 +58,7 @@ class ANNVanilla:
 
     def train(self):
         if os.path.exists(self.done_file):
-            print("Already done. Skipping.")
+            print(f"Already done {self.done_file}. Skipping.")
             return
         self.write_columns()
         self.model.train()
