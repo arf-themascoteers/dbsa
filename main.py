@@ -18,10 +18,10 @@ if __name__ == "__main__":
     dwt = True
     indexify = "sigmoid"
     retain = False
-    random_init = False
-    uniform_lr = False
+    random_init = True
+    uniform_lr = True
     skip = False
-    lr = 0.0001
+    lr = 0.001
     ds = DSManager(dwt)
     train_x, train_y, test_x, test_y, validation_x, validation_y = ds.get_datasets()
     print(f"Train: {len(train_y)}, Test: {len(test_y)}, Validation: {len(validation_y)}")

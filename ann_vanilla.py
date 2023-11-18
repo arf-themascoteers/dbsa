@@ -40,6 +40,9 @@ class ANNVanilla:
         self.csv_file = self.prefix+".csv"
         self.done_file = self.prefix+".txt"
         self.model_file = self.prefix+".pt"
+        self.csv_file = os.path.join("results",self.csv_file)
+        self.done_file = os.path.join("results",self.done_file)
+        self.model_file = os.path.join("results",self.model_file)
         self.reporter = Reporter(self.csv_file)
         self.start_time = datetime.now()
 
