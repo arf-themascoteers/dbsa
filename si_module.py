@@ -44,4 +44,4 @@ class SIModule(nn.Module):
         return self.params[index].item()
 
     def __str__(self):
-        return str(self.__class__.__str__)
+        return str(self.__class__.__name__)

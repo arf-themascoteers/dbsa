@@ -26,9 +26,20 @@ class MyMachine:
     def score(self, X_train, y_train, X_test, y_test):
         X_train, X_validation, y_train, y_validation = train_test_split(X_train, y_train, test_size=0.1,random_state=40)
         self.fit(X_train, X_validation, y_train, y_validation)
+
+        X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
+        y_train = torch.tensor(y_train, dtype=torch.float32).to(self.device)
         r2_train, rmse_train = self.evaluate(X_train, y_train)
+
+        X_validation = torch.tensor(X_validation, dtype=torch.float32).to(self.device)
+        y_validation = torch.tensor(y_validation, dtype=torch.float32).to(self.device)
         r2_validation, rmse_validation = self.evaluate(X_validation, y_validation)
+
+        X_test = torch.tensor(X_test, dtype=torch.float32).to(self.device)
+        y_test = torch.tensor(y_test, dtype=torch.float32).to(self.device)
         r2_test, rmse_test = self.evaluate(X_test, y_test)
+
+
         return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test
 
     def fit(self, X_train, X_validation, y_train, y_validation):
@@ -49,8 +60,9 @@ class MyMachine:
             loss.backward()
             self.optimizer.step()
             self.optimizer.zero_grad()
-            row = self.dump_row(epoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
-            if epoch%50 == 0:
+            depoch = epoch+1
+            row = self.dump_row(depoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
+            if depoch%50 == 0:
                 print("".join([str(i).ljust(20) for i in row]))
 
     def evaluate(self,X,y,spline=None):

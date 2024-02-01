@@ -59,8 +59,7 @@ class Evaluator:
         return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test
 
     def str_process(self, r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis):
-        sis_str = str(sis)
-        sis_str = sis_str.replace(",", ";")
+        sis_str = self.format_sis(sis)
         return \
                 self.nf(r2_train),\
                 self.nf(rmse_train),\
@@ -72,3 +71,11 @@ class Evaluator:
 
     def nf(self, metric):
         return f"{round(metric, 2):.2f}"
+
+    def format_sis(self, sis):
+        the_strs = []
+        for si in sis:
+            si_name = str(si["si"])
+            si_count = str(si["count"])
+            the_strs.append(f"{si_name}:{si_count}")
+        return ";".join(the_strs)
