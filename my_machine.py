@@ -81,9 +81,9 @@ class MyMachine:
         row = [train_r2, validation_r2, train_rmse, validation_rmse]
         row = [round(r,5) for r in row]
         row = [epoch] + row
-        for key, value in self.model.get_params(X.shape[1]):
-            print(f"{value.ljust(20)}")
+        for key, value in self.model.get_params(X.shape[1]).items():
+            row.append(value)
         with open(self.csv_file, 'a') as file:
-            file.write(",".join([f"{x}" for x in row]))
+            file.write(",".join([f"{str(x).ljust(20)}" for x in row]))
             file.write("\n")
         return row

@@ -25,7 +25,7 @@ class SIModule(nn.Module):
     def forward(self, splines):
         indices = self.params[0:self.count_indices]
         indices = F.sigmoid(indices)
-        outs1 = splines(indices)
+        outs1 = splines.evaluate(indices)
         outs2 = self.params[self.count_indices:]
         outs = torch.hstack((outs1, outs2))
         outs = self._forward(outs)
@@ -44,4 +44,4 @@ class SIModule(nn.Module):
         return self.params[index].item()
 
     def __str__(self):
-        return self.__class__.__str__
+        return str(self.__class__.__str__)
