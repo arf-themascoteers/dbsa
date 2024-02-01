@@ -61,8 +61,8 @@ class MyMachine:
             self.optimizer.step()
             self.optimizer.zero_grad()
             depoch = epoch+1
-            row = self.dump_row(depoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
             if depoch%50 == 0:
+                row = self.dump_row(depoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
                 print("".join([str(i).ljust(20) for i in row]))
 
     def evaluate(self,X,y,spline=None):

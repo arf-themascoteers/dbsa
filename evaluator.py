@@ -50,7 +50,7 @@ class Evaluator:
                     f"{r2_test},"                    
                     f"{rmse_test},"
                     
-                    f"{sis}")
+                    f"{sis}\n")
 
     def process(self, dataset, sis):
         machine = MyMachine(sis)
