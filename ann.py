@@ -1,74 +1,53 @@
 import torch.nn as nn
 import torch
-from bi import BI
-import torch.nn.functional as F
-
-from torchcubicspline import(natural_cubic_spline_coeffs, NaturalCubicSpline)
+from algorithms.fsdr.band_index import BandIndex
+import my_utils
 
 
 class ANN(nn.Module):
-    def __init__(self):
+    def __init__(self, target_feature_size, original_feature_size, seq, mode):
         super().__init__()
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = my_utils.get_device()
+        self.target_feature_size = target_feature_size
+        self.original_feature_size = original_feature_size
+        self.seq = seq
+        self.mode = mode
+        init_vals = torch.linspace(0.001,0.99, target_feature_size+2)
+        modules = []
+        for i in range(self.target_feature_size):
+            val = my_utils.inverse_sigmoid_torch(init_vals[i + 1])
+            bi = BandIndex(val, self.original_feature_size, self.seq, self.mode)
+            modules.append(bi)
+        self.band_indices = nn.ModuleList(modules)
+        self.linear = self.get_linear()
 
-        self.sis = [
-            {"si":BI, "count":10, "initial_values": torch.tensor([-4.19722458, -1.38629436, -0.84729786, -0.40546511,
-                                                                  0.40546511,  0.84729786,  1.38629436,  2.19722458,
-                                                                  3.04452244,  6.60517019]).reshape(-1,1) }
-        ]
-
-        self.total = sum([si["count"] for si in self.sis])
-
-        self.linear1 = nn.Sequential(
-            nn.Linear(self.total, 10),
+    def get_linear(self):
+        input_size = self.target_feature_size
+        hidden_1 = 15
+        hidden_2 = 10
+        if self.seq:
+            if self.mode == "linear_multi":
+                input_size = sum([band_index.get_embedding_size() for band_index in self.band_indices])
+        return nn.Sequential(
+            nn.Linear(input_size, hidden_1),
             nn.LeakyReLU(),
-            nn.Linear(10, 1)
+            nn.Linear(hidden_1, hidden_2),
+            nn.LeakyReLU(),
+            nn.Linear(hidden_2, 1)
         )
 
-        self.indices = torch.linspace(0, 1, 66).to(self.device)
-        modules = []
-        for si in self.sis:
-            if "initial_values" in si:
-                for i in range(si["count"]):
-                    modules.append(si["si"](si["initial_values"][i]))
-            else:
-                modules = modules + [si["si"]() for i in range(si["count"])]
-        self.machines = nn.ModuleList(modules)
-
-    def forward(self, x):
-        outputs = torch.zeros(x.shape[0], self.total, dtype=torch.float32).to(self.device)
-        x = x.permute(1,0)
-        coeffs = natural_cubic_spline_coeffs(self.indices, x)
-        spline = NaturalCubicSpline(coeffs)
-
-        for i,machine in enumerate(self.machines):
-            outputs[:,i] = machine(spline)
-
-        soc_hat = self.linear1(outputs)
+    def forward(self, spline):
+        size = spline._a.shape[1]
+        outputs = torch.zeros(size, self.target_feature_size, dtype=torch.float32).to(self.device)
+        for i,band_index in enumerate(self.band_indices):
+            outputs[:,i] = band_index(spline)
+        soc_hat = self.linear(outputs)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat
 
-    def get_param_loss(self):
-        loss = None
-        for i in range(1, len(self.machines)):
-            later_band = self.machines[i].params
-            past_band = self.machines[i-1].params
-            this_loss = F.relu(past_band-later_band)
-            if loss is None:
-                loss = this_loss
-            else:
-                loss = loss + this_loss
-        return loss
+    def get_indices(self):
+        return [band_index.get_indices() for band_index in self.band_indices]
 
-    def get_params(self):
-        params = []
-        index = 0
-        for type_count, si in enumerate(self.sis):
-            for i in range(si["count"]):
-                machine = self.machines[index]
-                p = {}
-                p["si"] = si["si"].__name__
-                p["params"] = machine.param_values()
-                params.append(p)
-                index = index+1
-        return params
+    def get_flattened_indices(self):
+        indices = torch.cat((self.get_indices()), dim=0)
+        return indices.tolist()

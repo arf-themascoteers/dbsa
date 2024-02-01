@@ -1,28 +1,51 @@
-from reporter import Reporter
 from ds_manager import DSManager
-from sklearn.metrics import mean_squared_error, r2_score
-import math
-import constants
-from ann_lightning import ANNLightning
-from ann_vanilla import ANNVanilla
+import os
 
 
 class Evaluator:
-    def __init__(self):
-        pass
+    def __init__(self, tasks):
+        self.tasks = tasks
+        self.filename = os.path.join("results", "results.csv")
+        self.columns = [
+            "features",
+            "samples",
 
-    def process(self):
-        ds = DSManager()
-        train_x, train_y, test_x, test_y, validation_x, validation_y = ds.get_datasets()
-        y_hats = None
-        print(f"Train: {len(train_y)}, Test: {len(test_y)}, Validation: {len(validation_y)}")
-        if constants.LIGHTNING:
-            ann = ANNLightning(train_x, train_y, test_x, test_y, validation_x, validation_y)
-        else:
-            ann = ANNVanilla(train_x, train_y, test_x, test_y, validation_x, validation_y)
-        ann.train()
-        y_hats = ann.test()
-        r2 = r2_score(test_y, y_hats)
-        rmse = math.sqrt(mean_squared_error(test_y, y_hats, squared=False))
-        return max(r2,0), rmse
+            "r2",
+            "rmse",
+            "selected_params"
+            
+            "sis",
+        ]
+        if not os.path.exists(self.filename):
+            with open(self.filename, 'w') as file:
+                file.write(",".join(self.columns) + "\n")
 
+    def evaluate(self):
+        for task in self.tasks:
+            print("*****************************************")
+            print(task)
+            print("*****************************************")
+            feature = task["feature"]
+            sample = task["sample"]
+            sis = task["sis"]
+            dataset = DSManager(feature, sample)
+            r2, rmse, selected_params = self.process(dataset, sis)
+            sis_str = str(sis)
+            sis_str = sis_str.replace(",",";")
+            selected_params_str = str(selected_params)
+            selected_params_str = selected_params_str.replace(",",";")
+            with open(self.filename, 'a') as file:
+                file.write(
+                    f"{dataset.count_features()},"
+                    f"{sample},"
+                    
+                    f"{r2},"                    
+                    f"{rmse},"                    
+                    f"{selected_params_str},"
+                    
+                    f"{sis_str}")
+
+    def process(self, dataset, sis):
+        X_train, y_train, X_test, y_test = dataset.get_train_test_X_y()
+        r2, rmse, selected_params = algorithm.predict_it(X_test, y_test)
+        return r2, rmse, selected_params
