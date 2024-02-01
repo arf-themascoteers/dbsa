@@ -8,7 +8,6 @@ class ANN(nn.Module):
         super().__init__()
         self.device = my_utils.get_device()
         modules = []
-        self.input_size = 0
         self.count_sis = 0
         for si in sis:
             si_class = si["si"]
@@ -24,11 +23,10 @@ class ANN(nn.Module):
                     initial_value = initial_values[i]
                     module = si_class(initial_value)
                 modules.append(module)
-                self.input_size = self.input_size + module.count_indices
 
         self.si_modules = nn.ModuleList(modules)
         self.linear = nn.Sequential(
-            nn.Linear(self.input_size, 15),
+            nn.Linear(self.count_sis, 15),
             nn.LeakyReLU(),
             nn.Linear(15, 10),
             nn.LeakyReLU(),

@@ -27,7 +27,7 @@ class Evaluator:
     def evaluate(self):
         for task in self.tasks:
             print("*****************************************")
-            print(task)
+            print(self.format_tasks(task))
             print("*****************************************")
             feature = task["feature"]
             sample = task["sample"]
@@ -75,7 +75,13 @@ class Evaluator:
     def format_sis(self, sis):
         the_strs = []
         for si in sis:
-            si_name = str(si["si"])
+            si_name = si["si"].__name__
             si_count = str(si["count"])
             the_strs.append(f"{si_name}:{si_count}")
         return ";".join(the_strs)
+
+    def format_tasks(self, tasks):
+        formatted = f"Features:{tasks['feature']}, Samples: {tasks['sample']}"
+        sis = tasks['sis']
+        sis_str = self.format_sis(sis)
+        return f"{formatted}, Spectral Indices: {sis_str}"
