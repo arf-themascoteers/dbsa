@@ -1,5 +1,4 @@
 from evaluator import Evaluator
-from plott import plot_me_plz
 from bi import BI
 from di import DI
 from ri import RI
@@ -12,7 +11,7 @@ if __name__ == '__main__':
     samples = [871]
     siss = [
         [
-            {"si": BI, "count": 10}
+            {"si": BI, "count": 3}
         ]
     ]
 
