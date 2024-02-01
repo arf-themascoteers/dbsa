@@ -43,13 +43,12 @@ class Evaluator:
                     f"{dataset.count_features()},"
                     f"{sample},"
                     
-                    f"{r2_train},"                    
-                    f"{rmse_train},"
-                    f"{r2_validation},"                    
-                    f"{rmse_validation},"
+                    f"{r2_train},"  
+                    f"{r2_validation},"
                     f"{r2_test},"                    
-                    f"{rmse_test},"
-                    
+                    f"{rmse_train},"                    
+                    f"{rmse_validation},"                    
+                    f"{rmse_test},"                    
                     f"{sis}\n")
 
     def process(self, dataset, sis):
@@ -61,11 +60,11 @@ class Evaluator:
     def str_process(self, r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis):
         sis_str = self.format_sis(sis)
         return \
-                self.nf(r2_train),\
+                self.nf(r2_train), \
+                self.nf(r2_validation), \
+                self.nf(r2_test), \
                 self.nf(rmse_train),\
-                self.nf(r2_validation),\
                 self.nf(rmse_validation),\
-                self.nf(r2_test),\
                 self.nf(rmse_test),\
                 sis_str
 

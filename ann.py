@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 import my_utils
+import torch.nn.functional as F
 
 
 class ANN(nn.Module):
@@ -59,6 +60,7 @@ class ANN(nn.Module):
                 param_name = f"{name_serial}:{names[i]}"
                 param_value = module.get_param_value(i)
                 if i < module.count_indices:
+                    param_value = F.sigmoid(torch.tensor(param_value)).item()
                     param_value = param_value*scale_index
                     if scale_index != 1:
                         param_value = round(param_value)

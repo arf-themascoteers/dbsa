@@ -8,11 +8,10 @@ from mndi import MNDI
 
 if __name__ == '__main__':
     features = [66]
-    samples = [871]
+    samples = [21782]
     siss = [
         [
-            {"si": DI, "count": 2},
-            {"si": NDI, "count": 2},
+            {"si": BI, "count": 10}
         ]
     ]
 
