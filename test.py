@@ -11,8 +11,8 @@ if __name__ == '__main__':
     samples = [871]
     siss = [
         [
-            {"si": BI, "count": 3},
-            {"si": RI, "count": 2}
+            {"si": DI, "count": 2},
+            {"si": NDI, "count": 2},
         ]
     ]
 

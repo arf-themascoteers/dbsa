@@ -62,6 +62,10 @@ class ANN(nn.Module):
                     param_value = param_value*scale_index
                     if scale_index != 1:
                         param_value = round(param_value)
+                    else:
+                        param_value = round(param_value,5)
+                else:
+                    param_value = round(param_value, 5)
                 params[param_name]=param_value
         return params
 

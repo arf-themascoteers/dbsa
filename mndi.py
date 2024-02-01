@@ -5,14 +5,15 @@ class MNDI(SIModule):
     def __init__(self):
         super().__init__(4,3)
 
-    def _forward(self, outs):
-        alpha = outs[3]
-        r_is = outs[0]
-        r_js = outs[1]
-        r_ks = outs[2]
-        diff = r_js - alpha*r_ks
-        up = r_is - diff
-        down = r_is + diff
+    def _forward(self, splines, params):
+        i = splines.evaluate(params[0])
+        j = splines.evaluate(params[1])
+        k = splines.evaluate(params[2])
+        alpha = params[3]
+
+        diff = j - alpha*k
+        up = i - diff
+        down = i + diff
         mndis = up/down
         return mndis
 

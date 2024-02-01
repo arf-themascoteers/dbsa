@@ -23,15 +23,14 @@ class SIModule(nn.Module):
         return math.log(x / (1 - x))
 
     def forward(self, splines):
-        indices = self.params[0:self.count_indices]
-        indices = F.sigmoid(indices)
-        outs1 = splines.evaluate(indices)
-        outs2 = self.params[self.count_indices:]
-        outs = torch.hstack((outs1, outs2))
-        outs = self._forward(outs)
-        return outs
+        outs1 = self.params[0:self.count_indices]
+        outs1 = F.sigmoid(outs1)
+        if self.count_indices != self.count_params:
+            outs2 = self.params[self.count_indices:]
+            outs1 = torch.hstack((outs1, outs2))
+        return self._forward(splines, outs1)
 
-    def _forward(self, spline):
+    def _forward(self, splines, params):
         pass
 
     def _names(self):
