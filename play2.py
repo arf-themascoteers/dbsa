@@ -13,6 +13,9 @@ x = [
     {"si":"SI2","cn":"cn12"}
 ]
 
-x = str(x)
-x = x.replace(",",";")
-print(x)
+# x = str(x)
+# x = x.replace(",",";")
+# print(x)
+
+for a in x:
+    print(a["si"])
