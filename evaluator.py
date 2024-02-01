@@ -1,5 +1,6 @@
 from ds_manager import DSManager
 import os
+from my_machine import MyMachine
 
 
 class Evaluator:
@@ -10,9 +11,14 @@ class Evaluator:
             "features",
             "samples",
 
-            "r2",
-            "rmse",
-            "selected_params"
+            "r2_train",
+            "rmse_train",
+            "r2_validation",
+            "rmse_validation",
+            "r2_test",
+            "rmse_test",
+
+            "params"
             
             "sis",
         ]
@@ -29,23 +35,47 @@ class Evaluator:
             sample = task["sample"]
             sis = task["sis"]
             dataset = DSManager(feature, sample)
-            r2, rmse, selected_params = self.process(dataset, sis)
-            sis_str = str(sis)
-            sis_str = sis_str.replace(",",";")
-            selected_params_str = str(selected_params)
-            selected_params_str = selected_params_str.replace(",",";")
+            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params = \
+                self.process(dataset, sis)
+            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis = \
+                self.str_process(r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis)
+
             with open(self.filename, 'a') as file:
                 file.write(
                     f"{dataset.count_features()},"
                     f"{sample},"
                     
-                    f"{r2},"                    
-                    f"{rmse},"                    
-                    f"{selected_params_str},"
+                    f"{r2_train},"                    
+                    f"{rmse_train},"
+                    f"{r2_validation},"                    
+                    f"{rmse_validation},"
+                    f"{r2_test},"                    
+                    f"{rmse_test},"
                     
-                    f"{sis_str}")
+                    f"{params},"
+                    
+                    f"{sis}")
 
     def process(self, dataset, sis):
+        machine = MyMachine(sis)
         X_train, y_train, X_test, y_test = dataset.get_train_test_X_y()
-        r2, rmse, selected_params = algorithm.predict_it(X_test, y_test)
-        return r2, rmse, selected_params
+        r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params = machine.score(X_train, y_train, X_test, y_test)
+        return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params
+
+    def str_process(self, r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis):
+        sis_str = str(sis)
+        sis_str = sis_str.replace(",", ";")
+        params_str = str(params)
+        params_str = params_str.replace(",", ";")
+        return \
+                self.nf(r2_train),\
+                self.nf(rmse_train),\
+                self.nf(r2_validation),\
+                self.nf(rmse_validation),\
+                self.nf(r2_test),\
+                self.nf(rmse_test),\
+                params_str,\
+                sis_str
+
+    def nf(self, metric):
+        return f"{round(metric, 2):.2f}"

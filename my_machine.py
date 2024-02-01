@@ -1,4 +1,5 @@
 import math
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from approximator import get_splines
 import torch
@@ -22,30 +23,38 @@ class MyMachine:
         self.start_time = datetime.now()
         print("Learnable Params",sum(p.numel() for p in self.model.parameters() if p.requires_grad))
 
-    def fit(self, X, y, X_validation, y_validation):
-        print(f"X,X_validation: {X.shape} {X_validation.shape}")
+    def score(self, X_train, y_train, X_test, y_test):
+        X_train, X_validation, y_train, y_validation = train_test_split(X_train, y_train, test_size=0.1,random_state=40)
+        params = self.fit(X_train, X_validation, y_train, y_validation)
+        r2_train, rmse_train = self.evaluate(X_train, y_train)
+        r2_validation, rmse_validation = self.evaluate(X_validation, y_validation)
+        r2_test, rmse_test = self.evaluate(X_test, y_test)
+        return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params
+
+    def fit(self, X_train, X_validation, y_train, y_validation):
+        print(f"X,X_validation: {X_train.shape} {X_validation.shape}")
         self.write_columns()
         self.model.train()
-        X = torch.tensor(X, dtype=torch.float32).to(self.device)
-        spline = get_splines(X, self.device)
+        X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
+        spline = get_splines(X_train, self.device)
         X_validation = torch.tensor(X_validation, dtype=torch.float32).to(self.device)
         spline_validation = get_splines(X_validation, self.device)
-        y = torch.tensor(y, dtype=torch.float32).to(self.device)
+        y_train = torch.tensor(y_train, dtype=torch.float32).to(self.device)
         y_validation = torch.tensor(y_validation, dtype=torch.float32).to(self.device)
         for epoch in range(self.epochs):
             y_hat = self.model(spline)
-            loss_1 = self.criterion(y_hat, y)
+            loss_1 = self.criterion(y_hat, y_train)
             loss_2 = 0
             loss = loss_1 + loss_2
             loss.backward()
             self.optimizer.step()
             self.optimizer.zero_grad()
-            row = self.dump_row(epoch, X, spline, y, X_validation, spline_validation, y_validation)
+            row = self.dump_row(epoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
             if epoch%50 == 0:
                 print("".join([str(i).ljust(20) for i in row]))
         return self.get_indices()
 
-    def evaluate(self,X, spline,y):
+    def evaluate(self,X,y,spline=None):
         self.model.eval()
         y_hat = self.model(spline)
         y_hat = y_hat.reshape(-1)
@@ -70,8 +79,8 @@ class MyMachine:
             file.write("\n")
 
     def dump_row(self, epoch, X, spline, y, X_validation, spline_validation, y_validation):
-        train_r2, train_rmse = self.evaluate(X, spline, y)
-        test_r2, test_rmse = self.evaluate(X_validation, spline_validation, y_validation)
+        train_r2, train_rmse = self.evaluate(X, y, spline)
+        test_r2, test_rmse = self.evaluate(X_validation, y_validation, spline_validation)
         row = [train_r2, test_r2, train_rmse, test_rmse, self.original_feature_size]
         row = [round(r,5) for r in row]
         row = [epoch] + row + [self.get_elapsed_time()]
@@ -103,3 +112,6 @@ class MyMachine:
         spline = get_splines(X, self.device)
         y_hat = self.model(spline)
         return y_hat.detach().cpu().numpy()
+
+
+
