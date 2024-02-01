@@ -33,10 +33,10 @@ class Evaluator:
             sample = task["sample"]
             sis = task["sis"]
             dataset = DSManager(feature, sample)
-            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test = \
+            r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test = \
                 self.process(dataset, sis)
-            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis = \
-                self.str_process(r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis)
+            r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis = \
+                self.str_process(r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis)
 
             with open(self.filename, 'a') as file:
                 file.write(
@@ -58,7 +58,7 @@ class Evaluator:
         r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test = machine.score(X_train, y_train, X_test, y_test)
         return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test
 
-    def str_process(self, r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis):
+    def str_process(self, r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis):
         sis_str = str(sis)
         sis_str = sis_str.replace(",", ";")
         return \
