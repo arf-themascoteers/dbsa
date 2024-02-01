@@ -35,10 +35,10 @@ class Evaluator:
             sample = task["sample"]
             sis = task["sis"]
             dataset = DSManager(feature, sample)
-            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params = \
+            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test = \
                 self.process(dataset, sis)
-            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis = \
-                self.str_process(r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis)
+            r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis = \
+                self.str_process(r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis)
 
             with open(self.filename, 'a') as file:
                 file.write(
@@ -52,21 +52,17 @@ class Evaluator:
                     f"{r2_test},"                    
                     f"{rmse_test},"
                     
-                    f"{params},"
-                    
                     f"{sis}")
 
     def process(self, dataset, sis):
         machine = MyMachine(sis)
         X_train, y_train, X_test, y_test = dataset.get_train_test_X_y()
-        r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params = machine.score(X_train, y_train, X_test, y_test)
-        return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params
+        r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test = machine.score(X_train, y_train, X_test, y_test)
+        return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test
 
-    def str_process(self, r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params, sis):
+    def str_process(self, r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, sis):
         sis_str = str(sis)
         sis_str = sis_str.replace(",", ";")
-        params_str = str(params)
-        params_str = params_str.replace(",", ";")
         return \
                 self.nf(r2_train),\
                 self.nf(rmse_train),\
@@ -74,7 +70,6 @@ class Evaluator:
                 self.nf(rmse_validation),\
                 self.nf(r2_test),\
                 self.nf(rmse_test),\
-                params_str,\
                 sis_str
 
     def nf(self, metric):

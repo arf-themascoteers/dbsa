@@ -37,7 +37,7 @@ class ANN(nn.Module):
         soc_hat = soc_hat.reshape(-1)
         return soc_hat
 
-    def get_params(self):
+    def get_params(self, scale_index=1):
         last_name = None
         params = {}
         serial = 0
@@ -53,6 +53,10 @@ class ANN(nn.Module):
             for i in range(module.count_params):
                 param_name = f"{name_serial}:{names[i]}"
                 param_value = module.get_param_value(i)
+                if i < module.count_indices:
+                    param_value = param_value*scale_index
+                    if scale_index != 1:
+                        param_value = round(param_value)
                 params[param_name]=param_value
         return params
 
