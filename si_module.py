@@ -11,6 +11,10 @@ class SIModule(nn.Module):
         self.count_indices = count_indices
         if initial_value is None:
             initial_value = torch.rand(count_params)
+        else:
+            if count_params != initial_value.shape[0]:
+                raise TypeError(f"{self.__class__.__name__} requires {self.count_params} arguments. "
+                                f"Given {initial_value.shape[0]} ({initial_value}).")
         for i in range(self.count_indices):
             initial_value[i] = self.inverse_sigmoid(initial_value[i])
         self.params = nn.Parameter(initial_value)
