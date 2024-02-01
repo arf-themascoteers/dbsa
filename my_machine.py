@@ -32,7 +32,7 @@ class MyMachine:
         return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test, params
 
     def fit(self, X_train, X_validation, y_train, y_validation):
-        print(f"X,X_validation: {X_train.shape} {X_validation.shape}")
+        print(f"X_train,X_validation: {X_train.shape} {X_validation.shape}")
         self.write_columns()
         self.model.train()
         X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
@@ -70,7 +70,7 @@ class MyMachine:
 
 
     def write_columns(self):
-        columns = ["epoch","train_r2","validation_r2","train_rmse","validation_rmse","time","original_size"]
+        columns = ["epoch","train_r2","validation_r2","train_rmse","validation_rmse"]
         for index,p in enumerate(self.model.get_indices()):
             columns.append(f"band_{index+1}")
         print("".join([c.ljust(20) for c in columns]))

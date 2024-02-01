@@ -36,3 +36,25 @@ class ANN(nn.Module):
         soc_hat = self.linear(outputs)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat
+
+    def get_params(self):
+        last_name = None
+        params = {}
+        serial = 0
+        for module in self.modules:
+            name = str(module)
+            if last_name is None or name!=last_name:
+                serial = 0
+            else:
+                serial = serial + 1
+            last_name = name
+            name_serial = f"{name}_{serial}"
+            names = module.names()
+            for i in range(module.count_params):
+                param_name = f"{name_serial}:{names[i]}"
+                param_value = module.get_param_value(i)
+                params[param_name]=param_value
+        return params
+
+    def get_param_names(self):
+        return list(self.get_params().keys())

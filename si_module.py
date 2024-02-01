@@ -36,3 +36,12 @@ class SIModule(nn.Module):
 
     def _names(self):
         pass
+
+    def names(self):
+        return self._names()
+
+    def get_param_value(self, index):
+        return self.params[index].item()
+
+    def __str__(self):
+        return self.__class__.__str__
