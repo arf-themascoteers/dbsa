@@ -1,0 +1,6 @@
+{"si": BI, "count": 10},
+{"si": DI, "count": 3},
+{"si": RI, "count": 3},
+{"si": NDI, "count": 3},
+{"si": SNDI, "count": 3},
+{"si": MNDI, "count": 3}
