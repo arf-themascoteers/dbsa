@@ -29,7 +29,7 @@ class MyMachine:
         r2_train, rmse_train = self.evaluate(X_train, y_train)
         r2_validation, rmse_validation = self.evaluate(X_validation, y_validation)
         r2_test, rmse_test = self.evaluate(X_test, y_test)
-        return r2_train, rmse_train, r2_validation, rmse_validation, r2_test, rmse_test
+        return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test
 
     def fit(self, X_train, X_validation, y_train, y_validation):
         print(f"X_train,X_validation: {X_train.shape} {X_validation.shape}")
