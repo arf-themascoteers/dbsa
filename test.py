@@ -8,14 +8,15 @@ from mndi import MNDI
 import torch
 
 if __name__ == '__main__':
-    features = [66]
-    samples = [871]
+    features = [4200]
+    samples = [21782]
     siss = [
         [
             {"si": BI, "count": 3},
+            {"si": DI, "count": 3},
             {"si": NDI, "count": 3},
-            {"si": BI, "count": 2, "initial_values" : [torch.tensor([0.01]), torch.tensor([0.99])]},
-            {"si": SNDI, "count": 2, "initial_values" : [torch.tensor([0.01, 0.05, 0.6]), torch.tensor([0.9, 0.3, 3.0])]}
+            {"si": SNDI, "count": 3},
+            {"si": MNDI, "count": 3}
         ]
     ]
 
