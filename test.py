@@ -12,11 +12,8 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
-            {"si": BI, "count": 3},
-            {"si": DI, "count": 3},
-            {"si": NDI, "count": 3},
-            {"si": SNDI, "count": 3},
-            {"si": MNDI, "count": 3}
+            {"si": MNDI, "count": 1, "initial_values":[torch.tensor([0.171, 0.714, 0.948, 1.5])], "lock":True}
+            #{"si": MNDI, "count": 1}
         ]
     ]
 
@@ -28,7 +25,7 @@ if __name__ == '__main__':
                     {
                         "feature": feature,
                         "sample": sample,
-                        "sis": sis,
+                        "sis": sis
                     }
                 )
     ev = Evaluator(tasks)

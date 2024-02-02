@@ -5,8 +5,9 @@ import torch.nn.functional as F
 
 
 class ANN(nn.Module):
-    def __init__(self, sis):
+    def __init__(self, sis, lock):
         super().__init__()
+        self.lock = lock
         self.device = my_utils.get_device()
         modules = []
         self.count_sis = 0
@@ -29,10 +30,11 @@ class ANN(nn.Module):
         self.linear = nn.Sequential(
             nn.Linear(self.count_sis, 15),
             nn.LeakyReLU(),
-            nn.Linear(15, 10),
-            nn.LeakyReLU(),
-            nn.Linear(10, 1)
+            nn.Linear(15, 1)
         )
+        for module in self.si_modules:
+            for param in module.parameters():
+                param.requires_grad = False
 
     def forward(self, spline):
         size = spline._a.shape[1]

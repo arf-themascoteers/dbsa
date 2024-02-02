@@ -10,8 +10,9 @@ import my_utils
 
 
 class MyMachine:
-    def __init__(self, sis):
-        self.model = ANN(sis)
+    def __init__(self, sis, lock):
+        self.model = ANN(sis, lock)
+        self.lock = lock
         self.lr = 0.001
         self.weight_decay = self.lr/10
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay)
