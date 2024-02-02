@@ -2,8 +2,8 @@ from si_module import SIModule
 
 
 class MNDI(SIModule):
-    def __init__(self):
-        super().__init__(4,3)
+    def __init__(self, initial_value=None):
+        super().__init__(4,3, initial_value)
 
     def _forward(self, splines, params):
         i = splines.evaluate(params[0])

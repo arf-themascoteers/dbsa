@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-import math
+from my_utils import inverse_sigmoid
 
 
 class SIModule(nn.Module):
@@ -16,11 +16,8 @@ class SIModule(nn.Module):
                 raise TypeError(f"{self.__class__.__name__} requires {self.count_params} arguments. "
                                 f"Given {initial_value.shape[0]} ({initial_value}).")
         for i in range(self.count_indices):
-            initial_value[i] = self.inverse_sigmoid(initial_value[i])
+            initial_value[i] = inverse_sigmoid(initial_value[i])
         self.params = nn.Parameter(initial_value)
-
-    def inverse_sigmoid(self, x):
-        return math.log(x / (1 - x))
 
     def forward(self, splines):
         outs1 = self.params[0:self.count_indices]
