@@ -44,17 +44,15 @@ class ANN(nn.Module):
         return soc_hat
 
     def get_params(self, scale_index=1):
-        last_name = None
         params = {}
-        serial = 0
+        si_count = {}
         for module in self.si_modules:
             name = str(module)
-            if last_name is None or name!=last_name:
-                serial = 0
+            if name not in si_count:
+                si_count[name] = 0
             else:
-                serial = serial + 1
-            last_name = name
-            name_serial = f"{name}_{serial}"
+                si_count[name] = si_count[name] + 1
+            name_serial = f"{name}_{si_count[name]}"
             names = module.names()
             for i in range(module.count_params):
                 param_name = f"{name_serial}:{names[i]}"

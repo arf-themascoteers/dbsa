@@ -7,26 +7,13 @@ from sndi import SNDI
 from mndi import MNDI
 
 if __name__ == '__main__':
-    features = [4200]
-    samples = [21782]
+    features = [66]
+    samples = [871]
     siss = [
         [
-            {"si": BI, "count": 5}
-        ],
-        [
-            {"si": DI, "count": 5}
-        ],
-        [
-            {"si": RI, "count": 5}
-        ],
-        [
-            {"si": NDI, "count": 5}
-        ],
-        [
-            {"si": SNDI, "count": 5}
-        ],
-        [
-            {"si": MNDI, "count": 5}
+            {"si": BI, "count": 3},
+            {"si": NDI, "count": 3},
+            {"si": BI, "count": 2}
         ]
     ]
 
