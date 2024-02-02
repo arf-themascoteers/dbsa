@@ -7,7 +7,7 @@ import my_utils
 
 feature = 4200
 sample = 21782
-bands = [720, 3000, 3980, 500, 1000, 1500, 2000, 4200]
+bands = [720, 3000, 3980, 500, 1000, 1500, 2000, 0, 4199]
 
 dataset = DSManager(feature, sample)
 X_train, y_train, X_test, y_test = dataset.get_train_test_X_y()
