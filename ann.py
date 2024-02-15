@@ -127,7 +127,9 @@ class ANN(nn.Module):
         for module in self.si_modules:
             names.append(module.__class__.__name__)
             this_grads = module.output.grad
-            total_grad = torch.sum(torch.abs(this_grads)).item()
+            this_grads = torch.abs(this_grads)
+            this_grads = torch.sum(this_grads, dim=1)
+            total_grad = torch.mean(this_grads).item()
             grads.append(total_grad)
 
         sum_grads = sum(grads)
@@ -152,9 +154,10 @@ class ANN(nn.Module):
             module_name = module.__class__.__name__
             this_grads = module.output.grad
             this_grads = torch.abs(this_grads)
-            for i in range(this_grads.shape[1]):
+            total_grad = torch.mean(this_grads, dim=0)
+            for i in range(total_grad.shape[0]):
                 names.append(f"{module_name}_{i+1}")
-                grads.append(this_grads[i].item())
+                grads.append(total_grad[i].item())
 
         sum_grads = sum(grads)
         grads = [g / sum_grads for g in grads]
