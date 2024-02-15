@@ -19,6 +19,7 @@ class SIModule(nn.Module):
         for i in range(self.count_indices):
             initial_value[i] = inverse_sigmoid(initial_value[i])
         self.params = nn.Parameter(initial_value)
+        self.output = None
 
     def get_output_length(self):
         return self.output_length
@@ -29,7 +30,9 @@ class SIModule(nn.Module):
         if self.count_indices != self.count_params:
             outs2 = self.params[self.count_indices:]
             outs1 = torch.hstack((outs1, outs2))
-        return self._forward(splines, outs1)
+        self.output = self._forward(splines, outs1)
+        self.output.retain_grad()
+        return self.output
 
     def _forward(self, splines, params):
         pass

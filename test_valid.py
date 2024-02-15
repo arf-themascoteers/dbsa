@@ -12,7 +12,10 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
-            {"si": NDI, "count": 1, "initial_values":[torch.tensor([390/4200, 884/4200])], "lock":True},
+            {"si": SNDI, "count": 1, "initial_values":[torch.tensor([3745/4200, 962/4200, 1.01024])], "lock":True},
+        ],
+        [
+            {"si": MNDI, "count": 1, "initial_values": [torch.tensor([3822 / 4200, 529 / 4200, 2966 / 4200, 0.91504])], "lock": True},
         ]
     ]
 

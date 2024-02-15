@@ -109,3 +109,53 @@ class ANN(nn.Module):
         sum_grads = sum(grads)
         grads = [g / sum_grads for g in grads]
         return names, grads
+
+    def generate_impact_of_sis(self, X_train, y_train):
+        criterion = torch.nn.MSELoss(reduction='mean')
+        X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
+        spline = get_splines(X_train, self.device)
+        y_train = torch.tensor(y_train, dtype=torch.float32).to(self.device)
+        y_hat = self(spline)
+        loss = criterion(y_hat, y_train)
+        loss.backward()
+        return self.get_impacts_of_sis()
+
+    def get_impacts_of_sis(self):
+        names = []
+        grads = []
+
+        for module in self.si_modules:
+            names.append(module.__class__.__name__)
+            this_grads = module.output.grad
+            total_grad = torch.sum(torch.abs(this_grads)).item()
+            grads.append(total_grad)
+
+        sum_grads = sum(grads)
+        grads = [g / sum_grads for g in grads]
+        return names, grads
+
+    def generate_impact_of_sis_ind(self, X_train, y_train):
+        criterion = torch.nn.MSELoss(reduction='mean')
+        X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
+        spline = get_splines(X_train, self.device)
+        y_train = torch.tensor(y_train, dtype=torch.float32).to(self.device)
+        y_hat = self(spline)
+        loss = criterion(y_hat, y_train)
+        loss.backward()
+        return self.get_impacts_of_sis_ind()
+
+    def get_impacts_of_sis_ind(self):
+        names = []
+        grads = []
+
+        for module in self.si_modules:
+            module_name = module.__class__.__name__
+            this_grads = module.output.grad
+            this_grads = torch.abs(this_grads)
+            for i in range(this_grads.shape[1]):
+                names.append(f"{module_name}_{i+1}")
+                grads.append(this_grads[i].item())
+
+        sum_grads = sum(grads)
+        grads = [g / sum_grads for g in grads]
+        return names, grads

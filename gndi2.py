@@ -2,7 +2,7 @@ import torch
 from si_module import SIModule
 
 
-class GNDI_2(SIModule):
+class GNDI2(SIModule):
     def __init__(self, initial_value=None):
         super().__init__(3,2,2,initial_value)
 
@@ -12,14 +12,14 @@ class GNDI_2(SIModule):
         alpha1 = params[2]
 
         gndis = []
-        gndis.append(GNDI_2.out(i, j, alpha1))
-        gndis.append(GNDI_2.out(j, i, alpha1))
+        gndis.append(GNDI2.out(i, j, alpha1))
+        gndis.append(GNDI2.out(j, i, alpha1))
         gndis = torch.cat(gndis, dim=1)
         return gndis
 
     @staticmethod
     def out(i, j, alpha1):
-        result = GNDI_2.num(i, j, alpha1) / GNDI_2.den(i, j, alpha1)
+        result = GNDI2.num(i, j, alpha1) / GNDI2.den(i, j, alpha1)
         return result.reshape(-1,1)
 
     @staticmethod

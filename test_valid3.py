@@ -5,7 +5,6 @@ from ri import RI
 from ndi import NDI
 from sndi import SNDI
 from mndi import MNDI
-from p_mndi import P_MNDI
 import torch
 
 if __name__ == '__main__':

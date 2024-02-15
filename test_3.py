@@ -1,5 +1,5 @@
 from evaluator import Evaluator
-from gndi_3 import GNDI_3
+from gndi3 import GNDI3
 import torch
 
 if __name__ == '__main__':
@@ -7,34 +7,34 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ],
         [
-            {"si": GNDI_3, "count": 1}
+            {"si": GNDI3, "count": 1}
         ]
     ]
 

@@ -1,9 +1,9 @@
 import torch
 from si_module import SIModule
-from gndi_2 import GNDI_2
+from gndi2 import GNDI2
 
 
-class GNDI_3(SIModule):
+class GNDI3(SIModule):
     def __init__(self, initial_value=None):
         super().__init__(5,3,6,initial_value)
 
@@ -28,17 +28,17 @@ class GNDI_3(SIModule):
 
     @staticmethod
     def out(i, j, k, alpha1, alpha2):
-        result = GNDI_3.num(i,j,k,alpha1,alpha2) / GNDI_3.den(i,j,k,alpha1,alpha2)
+        result = GNDI3.num(i, j, k, alpha1, alpha2) / GNDI3.den(i, j, k, alpha1, alpha2)
         return result.reshape(-1,1)
 
     @staticmethod
     def num(i,j,k,alpha1,alpha2):
-        prev_num = GNDI_2.num(i,j,alpha1)
+        prev_num = GNDI2.num(i,j,alpha1)
         return k - alpha2 * prev_num
 
     @staticmethod
     def den(i,j,k,alpha1,alpha2):
-        prev_den = GNDI_2.den(i,j,alpha1)
+        prev_den = GNDI2.den(i,j,alpha1)
         return k + alpha2 * prev_den
 
     def _names(self):
