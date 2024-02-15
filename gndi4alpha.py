@@ -3,7 +3,7 @@ from si_module import SIModule
 from gndi3 import GNDI3
 
 
-class GNDI4(SIModule):
+class GNDI4Alpha(SIModule):
     def __init__(self, initial_value=None):
         super().__init__(76,4,24,initial_value)
 
@@ -118,7 +118,7 @@ class GNDI4(SIModule):
 
     @staticmethod
     def out(i, j, k, l, alpha1, alpha2, alpha3):
-        result = GNDI4.num(i, j, k, l, alpha1, alpha2, alpha3) / GNDI4.den(i, j, k, l, alpha1, alpha2, alpha3)
+        result = GNDI4Alpha.num(i, j, k, l, alpha1, alpha2, alpha3) / GNDI4Alpha.den(i, j, k, l, alpha1, alpha2, alpha3)
         return result.reshape(-1,1)
 
     @staticmethod
