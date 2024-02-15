@@ -30,8 +30,9 @@ if __name__ == '__main__':
     feature = 4200
     sample = 21782
     sis = [
-        #{"si": SNDI, "count": 1},
-        {"si": GNDI2, "count": 1}
+        {"si": SNDI, "count": 2},
+        {"si": MNDI, "count": 3},
+        #{"si": GNDI2, "count": 1},
     ]
     dataset = DSManager(feature, sample)
     train_x, train_y, test_x, test_y = dataset.get_train_test_X_y()
