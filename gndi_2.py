@@ -31,4 +31,4 @@ class GNDI_2(SIModule):
         return i+alpha1*j
 
     def _names(self):
-        return ["i","j","k","alpha1"]
+        return ["i","j","alpha1"]
