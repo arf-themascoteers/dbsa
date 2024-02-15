@@ -5,7 +5,9 @@ from ri import RI
 from ndi import NDI
 from sndi import SNDI
 from mndi import MNDI
-from p_mndi import P_MNDI
+from gndi_2 import GNDI_2
+from gndi_3 import GNDI_3
+from gndi_4 import GNDI_4
 import torch
 
 if __name__ == '__main__':
@@ -13,8 +15,98 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
-            #{"si": MNDI, "count": 1, "initial_values":[torch.tensor([0.171, 0.714, 0.948, 1.5])], "lock":True}
-            {"si": P_MNDI, "count": 1}
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+        [
+            {"si": GNDI_2, "count": 1}
+        ],
+
+
+
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+        [
+            {"si": GNDI_3, "count": 1}
+        ],
+
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
+        ],
+        [
+            {"si": GNDI_4, "count": 1}
         ]
     ]
 
