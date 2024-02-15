@@ -1,12 +1,10 @@
 from evaluator import Evaluator
 from gndi_2 import GNDI_2
 import torch
-import os
 from ds_manager import DSManager
-from ann import ANN
 
 
-def train_now(feature, sample, sis, machine_name):
+def train_now(feature, sample, sis):
     task = {
         "feature": feature,
         "sample": sample,
@@ -14,8 +12,15 @@ def train_now(feature, sample, sis, machine_name):
     }
 
     ev = Evaluator([task])
-    machine = ev.evaluate()
-    torch.save(machine.model, machine_name)
+    model_files = ev.evaluate()
+    return model_files[0]
+
+
+def analyze(model_path, train_x, train_y):
+    model = torch.load(model_path)
+    names, grads = model.generate_impact(train_x, train_y)
+    for i in range(len(names)):
+        print(f"{names[i]}\t{grads[i]}")
 
 
 if __name__ == '__main__':
@@ -24,14 +29,11 @@ if __name__ == '__main__':
     sis = [
         {"si": GNDI_2, "count": 1}
     ]
-
-    machine_name = "machine.pth"
-    model = ANN(sis, False)
-    if not os.path.exists(machine_name):
-        train_now(feature, sample, sis, machine_name)
-    model = torch.load(machine_name)
     dataset = DSManager(feature, sample)
     train_x, train_y, test_x, test_y = dataset.get_train_test_X_y()
-    names, grads = model.generate_impact(train_x, train_y)
-    for i in range(len(names)):
-        print(f"{names[i]}\t{grads[i]}")
+
+    #model_path = "models/empty"
+    model_path = train_now(feature, sample, sis)
+    analyze(model_path)
+
+

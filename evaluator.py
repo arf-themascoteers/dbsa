@@ -25,6 +25,7 @@ class Evaluator:
                 file.write(",".join(self.columns) + "\n")
 
     def evaluate(self):
+        model_files = []
         for task in self.tasks:
             print("*****************************************")
             print(self.format_tasks(task))
@@ -40,7 +41,7 @@ class Evaluator:
                 self.process(dataset, sis, lock)
             r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis = \
                 self.str_process(r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis)
-
+            model_files.append(machine.model_file)
             with open(self.filename, 'a') as file:
                 file.write(
                     f"{dataset.count_features()},"
@@ -54,8 +55,7 @@ class Evaluator:
                     f"{rmse_test},"                    
                     f"{machine.csv_file},"
                     f"{sis}\n")
-
-            return machine
+        return model_files
 
     def process(self, dataset, sis, lock):
         machine = MyMachine(sis, lock)

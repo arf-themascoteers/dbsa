@@ -20,7 +20,9 @@ class MyMachine:
         self.model.to(self.device)
         self.criterion = torch.nn.MSELoss(reduction='mean')
         self.epochs = 4000
-        self.csv_file = os.path.join("results", f"{str(datetime.now().timestamp()).replace('.', '')}.csv")
+        self.prefix = str(datetime.now().timestamp()).replace('.', '')
+        self.csv_file = os.path.join("results", f"{self.prefix}.csv")
+        self.model_file = os.path.join("models", f"{self.prefix}.pth")
         self.start_time = datetime.now()
         print("Learnable Params",sum(p.numel() for p in self.model.parameters() if p.requires_grad))
 
@@ -65,6 +67,7 @@ class MyMachine:
             if depoch%50 == 0:
                 row = self.dump_row(depoch, X_train, spline, y_train, X_validation, spline_validation, y_validation)
                 print("".join([str(i).ljust(20) for i in row]))
+        torch.save(self.model, self.model_file)
 
     def evaluate(self,X,y,spline=None):
         self.model.eval()
