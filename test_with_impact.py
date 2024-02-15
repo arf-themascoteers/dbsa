@@ -32,4 +32,6 @@ if __name__ == '__main__':
     model = torch.load(machine_name)
     dataset = DSManager(feature, sample)
     train_x, train_y, test_x, test_y = dataset.get_train_test_X_y()
-    model.generate_impact(train_x, train_y)
+    names, grads = model.generate_impact(train_x, train_y)
+    for i in range(len(names)):
+        print(f"{names[i]}\t{grads[i]}")
