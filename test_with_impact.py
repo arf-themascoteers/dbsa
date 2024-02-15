@@ -32,8 +32,8 @@ if __name__ == '__main__':
     dataset = DSManager(feature, sample)
     train_x, train_y, test_x, test_y = dataset.get_train_test_X_y()
 
-    #model_path = "models/empty"
+    #model_path = "models/1707990172214642.pth"
     model_path = train_now(feature, sample, sis)
-    analyze(model_path)
+    analyze(model_path, train_x, train_y)
 
 
