@@ -1,3 +1,0 @@
-features,samples,r2_train,r2_validation,r2_test,rmse_train,rmse_validation,rmse_test,sis
-4200,21782,0.88,0.88,0.87,0.05,0.05,0.05,BI:3;DI:3;NDI:3;SNDI:3;MNDI:3
-4200,21782,0.88,0.88,0.87,0.05,0.05,0.05,BI:3;DI:3;NDI:3;SNDI:3;MNDI:3
