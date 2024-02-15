@@ -15,7 +15,7 @@ def train_now(feature, sample, sis, machine_name):
 
     ev = Evaluator([task])
     machine = ev.evaluate()
-    torch.save(model, machine_name)
+    torch.save(machine.model, machine_name)
 
 
 if __name__ == '__main__':
