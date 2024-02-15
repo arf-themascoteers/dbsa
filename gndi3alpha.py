@@ -53,6 +53,6 @@ class GNDI3Alpha(SIModule):
 
     def _names(self):
         return ["i","j","k",
-                "alpha1_1","alpha1_2","alpha1_3","alpha1_4","alpha1_5","alpha1_6"
+                "alpha1_1","alpha1_2","alpha1_3","alpha1_4","alpha1_5","alpha1_6",
                 "alpha2_1","alpha2_2","alpha2_3","alpha2_4","alpha2_5", "alpha2_6"
                 ]

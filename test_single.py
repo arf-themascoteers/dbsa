@@ -8,6 +8,7 @@ from mndi import MNDI
 from gndi2 import GNDI2
 from gndi3 import GNDI3
 from gndi4 import GNDI4
+from gndi3alpha import GNDI3Alpha
 from gndi2alpha import GNDI2Alpha
 import torch
 
@@ -16,67 +17,13 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
-            {"si": GNDI2, "count": 1}
+            {"si": GNDI3Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI3, "count": 1}
         ],
         [
             {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-        [
-            {"si": GNDI2, "count": 1}
-        ],
-
-
-
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
-        ],
-        [
-            {"si": GNDI2Alpha, "count": 1}
         ]
     ]
 
