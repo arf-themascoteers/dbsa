@@ -17,7 +17,7 @@ class Evaluator:
             "rmse_train",
             "rmse_validation",
             "rmse_test",
-            "csv_file"
+            "csv_file",
             "sis",
         ]
         if not os.path.exists(self.filename):
