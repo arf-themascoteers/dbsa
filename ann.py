@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import my_utils
 import torch.nn.functional as F
+from approximator import get_splines
 
 
 class ANN(nn.Module):
@@ -83,3 +84,28 @@ class ANN(nn.Module):
 
     def get_param_names(self):
         return list(self.get_params().keys())
+
+    def generate_impact(self, X_train, y_train):
+        criterion = torch.nn.MSELoss(reduction='mean')
+        X_train = torch.tensor(X_train, dtype=torch.float32).to(self.device)
+        spline = get_splines(X_train, self.device)
+        y_train = torch.tensor(y_train, dtype=torch.float32).to(self.device)
+        y_hat = self(spline)
+        loss = criterion(y_hat, y_train)
+        loss.backward()
+        return self.get_impacts()
+
+    def get_impacts(self):
+        names = []
+        grads = []
+
+        for module in self.si_modules:
+            module_name = module.__class__.__name__
+            this_grads = module.params.grad
+            for i in range(module.count_params):
+                names.append(f"{module_name}-{module.names()[i]}")
+                grads.append(torch.abs(this_grads[i]).item())
+
+        sum_grads = sum(grads)
+        grads = [g / sum_grads for g in grads]
+        return names, grads

@@ -36,7 +36,7 @@ class Evaluator:
             if "lock" in task:
                 lock = task["lock"]
             dataset = DSManager(feature, sample)
-            r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test = \
+            r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, machine = \
                 self.process(dataset, sis, lock)
             r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis = \
                 self.str_process(r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis)
@@ -54,11 +54,13 @@ class Evaluator:
                     f"{rmse_test},"                    
                     f"{sis}\n")
 
+            return machine
+
     def process(self, dataset, sis, lock):
         machine = MyMachine(sis, lock)
         X_train, y_train, X_test, y_test = dataset.get_train_test_X_y()
         r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test = machine.score(X_train, y_train, X_test, y_test)
-        return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test
+        return r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, machine
 
     def str_process(self, r2_train, r2_validation, r2_test, rmse_train, rmse_validation, rmse_test, sis):
         sis_str = self.format_sis(sis)
