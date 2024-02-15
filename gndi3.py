@@ -12,7 +12,7 @@ class GNDI3(SIModule):
         j = splines.evaluate(params[1])
         k = splines.evaluate(params[2])
         alpha1 = params[3]
-        alpha2 = params[3]
+        alpha2 = params[4]
 
         gndis = []
         

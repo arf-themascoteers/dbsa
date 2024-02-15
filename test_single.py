@@ -16,6 +16,66 @@ if __name__ == '__main__':
     samples = [21782]
     siss = [
         [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+        [
+            {"si": GNDI2, "count": 1}
+        ],
+
+
+
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
+            {"si": GNDI2Alpha, "count": 1}
+        ],
+        [
             {"si": GNDI2Alpha, "count": 1}
         ]
     ]
