@@ -19,7 +19,7 @@ class MyMachine:
         self.device = my_utils.get_device()
         self.model.to(self.device)
         self.criterion = torch.nn.MSELoss(reduction='mean')
-        self.epochs = 1500
+        self.epochs = 4000
         self.csv_file = os.path.join("results", f"{str(datetime.now().timestamp()).replace('.', '')}.csv")
         self.start_time = datetime.now()
         print("Learnable Params",sum(p.numel() for p in self.model.parameters() if p.requires_grad))

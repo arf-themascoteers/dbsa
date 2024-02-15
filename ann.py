@@ -27,20 +27,30 @@ class ANN(nn.Module):
                 modules.append(module)
 
         self.si_modules = nn.ModuleList(modules)
+        self.linear_input_length = self._count_linear_input()
         self.linear = nn.Sequential(
-            nn.Linear(self.count_sis, 15),
+            nn.Linear(self.linear_input_length, 15),
             nn.LeakyReLU(),
             nn.Linear(15, 1)
         )
-        for module in self.si_modules:
-            for param in module.parameters():
-                param.requires_grad = False
+        if self.lock:
+            for module in self.si_modules:
+                for param in module.parameters():
+                    param.requires_grad = False
+
+    def _count_linear_input(self):
+        counter = 0
+        for i,module in enumerate(self.si_modules):
+            counter = counter + module.get_output_length()
+        return counter
 
     def forward(self, spline):
         size = spline._a.shape[1]
-        outputs = torch.zeros(size, self.count_sis, dtype=torch.float32).to(self.device)
+        outputs = []#torch.zeros(size, self.count_sis, dtype=torch.float32).to(self.device)
         for i,module in enumerate(self.si_modules):
-            outputs[:,i] = module(spline)
+            outputs.append(module(spline))
+        outputs = torch.cat(outputs, dim=1)
+        outputs = outputs.to(self.device)
         soc_hat = self.linear(outputs)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat

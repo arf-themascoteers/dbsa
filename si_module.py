@@ -5,10 +5,11 @@ from my_utils import inverse_sigmoid
 
 
 class SIModule(nn.Module):
-    def __init__(self, count_params, count_indices, initial_value=None):
+    def __init__(self, count_params, count_indices, output_length, initial_value=None):
         super().__init__()
         self.count_params = count_params
         self.count_indices = count_indices
+        self.output_length = output_length
         if initial_value is None:
             initial_value = torch.rand(count_params)
         else:
@@ -18,6 +19,9 @@ class SIModule(nn.Module):
         for i in range(self.count_indices):
             initial_value[i] = inverse_sigmoid(initial_value[i])
         self.params = nn.Parameter(initial_value)
+
+    def get_output_length(self):
+        return self.output_length
 
     def forward(self, splines):
         outs1 = self.params[0:self.count_indices]

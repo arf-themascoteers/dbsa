@@ -3,7 +3,7 @@ from si_module import SIModule
 
 class MNDI(SIModule):
     def __init__(self, initial_value=None):
-        super().__init__(4,3, initial_value)
+        super().__init__(4,3,1, initial_value)
 
     def _forward(self, splines, params):
         i = splines.evaluate(params[0])
@@ -15,7 +15,7 @@ class MNDI(SIModule):
         up = i - diff
         down = i + diff
         mndis = up/down
-        return mndis
+        return mndis.reshape(-1,1)
 
     def _names(self):
         return ["i","j","k","alpha"]
